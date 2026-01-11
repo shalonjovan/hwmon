@@ -1,0 +1,44 @@
+asus-fanctl/
+├── pyproject.toml
+├── README.md
+├── asus_fanctl/
+│   ├── __init__.py
+│
+│   ├── main.py
+│   │
+│   ├── config/
+│   │   ├── __init__.py
+│   │   ├── defaults.py
+│   │   └── presets.json
+│   │
+│   ├── hwmon/
+│   │   ├── __init__.py
+│   │   ├── resolver.py
+│   │   ├── sensors.py
+│   │   ├── fans.py
+│   │   └── curves.py
+│   │
+│   ├── controller/
+│   │   ├── __init__.py
+│   │   ├── state.py
+│   │   ├── profiles.py
+│   │   ├── safety.py
+│   │   └── engine.py
+│   │
+│   ├── tui/
+│   │   ├── __init__.py
+│   │   ├── app.py
+│   │   ├── layout.py
+│   │   ├── widgets.py
+│   │   └── keybinds.py
+│   │
+│   └── utils/
+│       ├── __init__.py
+│       ├── fs.py
+│       ├── clamp.py
+│       └── logger.py
+│
+└── scripts/
+    ├── run-dev.sh
+    └── install.sh
+
