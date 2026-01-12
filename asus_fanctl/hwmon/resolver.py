@@ -1,6 +1,5 @@
 
 import os
-
 HWMON_BASE = "/sys/class/hwmon"
 
 
@@ -26,3 +25,4 @@ def get_all_hwmons() -> dict[str, str]:
         except Exception:
             continue
     return result
+

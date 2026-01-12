@@ -6,7 +6,8 @@ from asus_fanctl.utils.fs import read_int
 
 _CORETEMP = find_hwmon("coretemp")
 _ASUS = find_hwmon("asus")
-
+nvme = find_hwmon("nvme")
+bat = find_hwmon("BAT0")
 
 def _read_milli(path: str) -> float:
     return read_int(path) / 1000.0
@@ -112,3 +113,60 @@ def get_all_fans():
 def read_file(path: str) -> str:
     with open(path, "r") as f:
         return f.read()
+
+
+# ---- NVME TEMPERATURES ----
+
+def get_nvme_temps():
+    """
+    Returns:
+        [
+          { "label": str, "temp": float }
+        ]
+    """
+    
+    temps = []
+
+    for fname in os.listdir(nvme):
+        if not fname.startswith("temp") or not fname.endswith("_label"):
+            continue
+
+        idx = fname.replace("temp", "").replace("_label", "")
+        label = open(os.path.join(nvme, fname)).read().strip()
+        temp = _read_milli(os.path.join(nvme, f"temp{idx}_input"))
+
+        temps.append({
+            "label": label,
+            "temp": temp
+        })
+
+    return temps
+
+
+# ---- BATTERY ----
+
+def get_battery_info():
+    """
+    Returns:
+        {
+          "voltage": float,   # volts
+          "power": float,     # watts
+          "health": float     # 0.0 - 1.0
+        }
+    """
+    
+
+    voltage = read_int(os.path.join(bat, "in0_input")) / 1000.0
+    power = read_int(os.path.join(bat, "power1_input")) / 1_000_000.0
+
+    device = os.path.join(bat, "device")
+    full_design = read_int(os.path.join(device, "energy_full_design"))
+    full_now = read_int(os.path.join(device, "energy_full"))
+
+    health = full_now / full_design if full_design > 0 else 0.0
+
+    return {
+        "voltage": voltage,
+        "power": power,
+        "health": health
+    }
