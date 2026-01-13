@@ -1,0 +1,35 @@
+hwmon/
+├── __init__.py
+├── main.py                 # temporary runner / test harness
+│
+├── fan_temp/               # fan + temperature (control + read)
+│   ├── __init__.py
+│   ├── fans.py             # fan RPM, fan labels, pwm enable state
+│   ├── temps.py            # cpu cores, cpu package, nvme temps
+│   └── curves.py           # write fan curves (asus_custom_fan_curve)
+│
+├── processor_ram/          # cpu / gpu / ram usage & frequency
+│   ├── __init__.py
+│   ├── cpu.py              # cpu usage %, freq, core count
+│   ├── gpu.py              # gpu usage %, vram used / total, freq
+│   └── ram.py              # ram used / free / total, freq
+│
+├── model/                  # system identity
+│   ├── __init__.py
+│   ├── system.py           # laptop model, vendor, product name
+│   ├── cpu_info.py         # cpu model name, architecture
+│   └── gpu_info.py         # gpu model name(s)
+│
+├── curves/                 # user-defined profiles (data only)
+│   ├── __init__.py
+│   └── curves.json         # custom curves / modes
+│
+├── state/                  # unified content snapshot
+│   ├── __init__.py
+│   └── snapshot.py         # one function → full system state
+│
+└── utils/                  # low-level helpers
+    ├── __init__.py
+    ├── fs.py               # safe read/write sysfs
+    ├── proc.py             # /proc parsing helpers
+    └── exec.py             # shell execution helpers
