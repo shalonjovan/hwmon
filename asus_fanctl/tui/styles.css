@@ -1,0 +1,17 @@
+Screen {
+    background: #0b0d10;
+}
+
+InfoBox {
+    border: solid #444;
+    padding: 1;
+    margin: 1;
+    height: auto;
+}
+
+CurveSelector {
+    border: solid #aa0000;
+    padding: 1;
+    margin: 1;
+    text-align: center;
+}
