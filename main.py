@@ -1,19 +1,10 @@
-from hwmon.processor_ram.usage import (
-    get_cpu_usage_percent,
-    get_mem_usage,
-)
+from hwmon.state.state import get_system_state
+import pprint
 
 
 def main():
-    print("CPU Usage:")
-    print(f"  {get_cpu_usage_percent()} %")
-
-    print("\nMemory Usage:")
-    mem = get_mem_usage()
-    print(
-        f"  Used: {mem['used_mb']} MB / {mem['total_mb']} MB "
-        f"({mem['percent_used']}%)"
-    )
+    state = get_system_state()
+    pprint.pprint(state, sort_dicts=False)
 
 
 if __name__ == "__main__":
