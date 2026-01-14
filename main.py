@@ -1,31 +1,19 @@
-# hwmon/main.py
-
-from hwmon.fan_temp.sensors import (
-    get_cpu_temps,
-    get_battery_info,
-    get_nvme_temps,
-    get_fans,
+from hwmon.processor_ram.usage import (
+    get_cpu_usage_percent,
+    get_mem_usage,
 )
 
 
 def main():
-    cpu = get_cpu_temps()
+    print("CPU Usage:")
+    print(f"  {get_cpu_usage_percent()} %")
 
-    print("CPU:")
-    print(f"  Package: {cpu['package']:.1f}°C")
-    for core, temp in cpu["cores"].items():
-        print(f"  Core {core}: {temp:.1f}°C")
-
-    print("\nNVMe:")
-    for k, v in get_nvme_temps().items():
-        print(f"  {k}: {v:.1f}°C")
-
-    print("\nFans:")
-    for k, v in get_fans().items():
-        print(f"  {k}: {v} RPM")
-
-    print("\nBattery:")
-    print(get_battery_info())
+    print("\nMemory Usage:")
+    mem = get_mem_usage()
+    print(
+        f"  Used: {mem['used_mb']} MB / {mem['total_mb']} MB "
+        f"({mem['percent_used']}%)"
+    )
 
 
 if __name__ == "__main__":
