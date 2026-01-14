@@ -1,25 +1,21 @@
-# hwmon/main.py
-
-from hwmon.model.info import (
-    get_system_product_name,
-    get_cpu_info,
-    get_total_ram_mb,
+from hwmon.fan_temp.sensors import (
+    get_battery_info,
+    get_nvme_temps,
+    get_fans,
 )
 
 
 def main():
-    print("System:")
-    print("  Product:", get_system_product_name())
+    print("Battery:")
+    print(get_battery_info())
 
-    cpu = get_cpu_info()
-    print("\nCPU:")
-    print("  Model:", cpu["model_name"])
-    print("  Arch:", cpu["architecture"])
-    print("  Cores:", cpu["cores"])
-    print("  Threads:", cpu["processors"])
+    print("\nNVMe Temps:")
+    for k, v in get_nvme_temps().items():
+        print(f"  {k}: {v:.1f}°C")
 
-    print("\nMemory:")
-    print("  Total RAM:", get_total_ram_mb(), "MB")
+    print("\nFans:")
+    for k, v in get_fans().items():
+        print(f"  {k}: {v} RPM")
 
 
 if __name__ == "__main__":

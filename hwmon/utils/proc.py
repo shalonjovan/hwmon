@@ -1,5 +1,3 @@
-# hwmon/utils/proc.py
-
 def parse_cpuinfo() -> dict:
     info = {}
     with open("/proc/cpuinfo", "r") as f:

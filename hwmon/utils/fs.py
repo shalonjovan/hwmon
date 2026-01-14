@@ -1,5 +1,3 @@
-# hwmon/utils/fs.py
-
 def read_str(path: str) -> str:
     try:
         with open(path, "r") as f:

@@ -1,5 +1,3 @@
-# hwmon/model/info.py
-
 from hwmon.utils.fs import read_str
 from hwmon.utils.proc import parse_cpuinfo, parse_meminfo
 
