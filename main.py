@@ -1,10 +1,11 @@
-from hwmon.state.state import get_system_state
-import pprint
+from hwmon.curves.curves import apply_profile
 
 
 def main():
-    state = get_system_state()
-    pprint.pprint(state, sort_dicts=False)
+    apply_profile("cpu")
+    apply_profile("gpu")
+    apply_profile("mid")
+    print("Curves applied successfully")
 
 
 if __name__ == "__main__":
