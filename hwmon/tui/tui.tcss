@@ -1,0 +1,43 @@
+Screen {
+    background: #0e0e11;
+    color: #d0d0d0;
+}
+
+#left {
+    width: 40%;
+    padding: 1;
+}
+
+#right {
+    width: 60%;
+    padding: 1;
+}
+
+#pc_ascii {
+    height: 14;
+    color: #a0a0ff;
+}
+
+#system_info {
+    margin-top: 1;
+}
+
+#cpu_mem {
+    width: 50%;
+    padding: 1;
+    border: solid #444;
+}
+
+#fans {
+    width: 50%;
+    padding: 1;
+    border: solid #444;
+    color: #ff9090;
+}
+
+#footer {
+    dock: bottom;
+    padding: 1;
+    background: #16161a;
+    color: #aaaaaa;
+}
