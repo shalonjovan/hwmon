@@ -14,11 +14,16 @@ def load_ascii(name: str) -> str:
     return (ASSETS / name).read_text()
 
 
+def bar(value, max_value, width=20, char="█"):
+    ratio = min(max(value / max_value, 0), 1)
+    filled = int(ratio * width)
+    return char * filled + " " * (width - filled)
+
+
 class HwmonTUI(App):
     CSS_PATH = "tui.tcss"
 
     def compose(self) -> ComposeResult:
-        # 🔥 APPLY CURVES ON STARTUP (ONE TIME)
         apply_profile("cpu")
         apply_profile("gpu")
         apply_profile("mid")
@@ -31,13 +36,12 @@ class HwmonTUI(App):
         # -------- LEFT PANEL --------
         left = Vertical(
             Static(pc_ascii, id="pc_ascii"),
-
             Static(
                 f"""
 [b]{state['system']['product_name']}[/b]
 
 Battery:
-  {state['battery']['battery life']}
+  Life : {state['battery']['battery life']}
   {state['battery']['voltage']} V
   {state['battery']['power']} W
 
@@ -51,7 +55,17 @@ NVMe:
             id="left"
         )
 
-        # -------- CPU + MEM --------
+        # -------- FANS --------
+        fans_text = fan_ascii + "\n\n"
+        for name, rpm in state["fans"].items():
+            fans_text += (
+                f"{name}: {rpm} RPM\n"
+                f"[{bar(rpm, 7600)}]\n"
+            )
+
+        fans = Static(fans_text.strip(), id="fans")
+
+        # -------- CPU + MEM (NOW BELOW FANS) --------
         cpu = state["cpu"]
         mem = state["memory"]
 
@@ -59,27 +73,22 @@ NVMe:
             f"""
 CPU
   Temp: {cpu['temps']['package']}°C
-  Usage: {cpu['usage_percent']}%
+  Usage: {cpu['usage_percent']:.1f}%
+  [{bar(cpu['usage_percent'], 100)}]
 
 Memory
-  Total: {mem['total_mb']} MB
   Used: {mem['usage']['used_mb']} MB
   Free: {mem['usage']['available_mb']} MB
+  [{bar(mem['usage']['used_mb'], mem['total_mb'])}]
 """,
             id="cpu_mem"
         )
 
-        # -------- FANS --------
-        fans = Static(
-            fan_ascii + "\n\n" +
-            "\n".join(
-                f"{k}: {v} RPM"
-                for k, v in state["fans"].items()
-            ),
-            id="fans"
+        right = Vertical(
+            fans,
+            cpu_mem,
+            id="right"
         )
-
-        right = Horizontal(cpu_mem, fans, id="right")
 
         yield Vertical(
             Horizontal(left, right),

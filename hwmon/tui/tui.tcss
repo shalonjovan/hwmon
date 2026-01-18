@@ -1,43 +1,56 @@
 Screen {
-    background: #0e0e11;
-    color: #d0d0d0;
+    background: black;
+    color: #cfd8dc;
 }
 
 #left {
     width: 40%;
     padding: 1;
+    height: 100%;
 }
 
 #right {
     width: 60%;
     padding: 1;
+    height: 100%;
+}
+
+Static {
+    width: 100%;
+    border: round #444;
+    padding: 1;
+    background: #050505;
 }
 
 #pc_ascii {
-    height: 14;
-    color: #a0a0ff;
+    color: #8aa2ff;        
+    border: round #3a4cff;
+    background: #030314;
+    margin-bottom: 1;
 }
 
 #system_info {
-    margin-top: 1;
-}
-
-#cpu_mem {
-    width: 50%;
-    padding: 1;
-    border: solid #444;
+    border: round #666;
+    background: #060606;
+    height: auto;
 }
 
 #fans {
-    width: 50%;
-    padding: 1;
-    border: solid #444;
-    color: #ff9090;
+    min-height: 20;
+    border: round #aa3333;
+    color: #ff6b6b;       
+    background: #080202;
+    margin-bottom: 1;
+}
+
+#cpu_mem {
+    border: round #4c6ef5;
+    background: #04060c;
 }
 
 #footer {
-    dock: bottom;
+    border: heavy #aa0000;
     padding: 1;
-    background: #16161a;
-    color: #aaaaaa;
+    background: #100000;
+    color: #ffb3b3;
 }
