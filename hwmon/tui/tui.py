@@ -23,21 +23,52 @@ def bar(value, max_value, width=20, char="█"):
 class HwmonTUI(App):
     CSS_PATH = "tui.tcss"
 
-    def compose(self) -> ComposeResult:
+    # ---------------- lifecycle ----------------
+
+    def on_mount(self):
+        # Apply curves ONCE
         apply_profile("cpu")
         apply_profile("gpu")
         apply_profile("mid")
 
+        # Start refresh timer
+        self.set_interval(1, self.refresh_state)
+
+    # ---------------- layout ----------------
+
+    def compose(self) -> ComposeResult:
+        pc_ascii = load_ascii("pc.txt")
+
+        self.pc_ascii = Static(pc_ascii, id="pc_ascii")
+        self.system_info = Static("", id="system_info")
+        self.fans = Static("", id="fans")
+        self.cpu_mem = Static("", id="cpu_mem")
+
+        left = Vertical(
+            self.pc_ascii,
+            self.system_info,
+            id="left"
+        )
+
+        right = Vertical(
+            self.fans,
+            self.cpu_mem,
+            id="right"
+        )
+
+        yield Vertical(
+            Horizontal(left, right),
+            Static("Curves applied: cpu | gpu | mid", id="footer")
+        )
+
+    # ---------------- updater ----------------
+
+    def refresh_state(self):
         state = get_system_state()
 
-        pc_ascii = load_ascii("pc.txt")
-        fan_ascii = load_ascii("fan.txt")
-
-        # -------- LEFT PANEL --------
-        left = Vertical(
-            Static(pc_ascii, id="pc_ascii"),
-            Static(
-                f"""
+        # -------- SYSTEM INFO --------
+        self.system_info.update(
+            f"""
 [b]{state['system']['product_name']}[/b]
 
 Battery:
@@ -47,29 +78,28 @@ Battery:
 
 NVMe:
 """ + "\n".join(
-                    f"  {k}: {v:.1f}°C"
-                    for k, v in state["nvme"].items()
-                ),
-                id="system_info"
-            ),
-            id="left"
+                f"  {k}: {v:.1f}°C"
+                for k, v in state["nvme"].items()
+            )
         )
 
         # -------- FANS --------
+        fan_ascii = load_ascii("fan.txt")
         fans_text = fan_ascii + "\n\n"
+
         for name, rpm in state["fans"].items():
             fans_text += (
                 f"{name}: {rpm} RPM\n"
                 f"[{bar(rpm, 7600)}]\n"
             )
 
-        fans = Static(fans_text.strip(), id="fans")
+        self.fans.update(fans_text.strip())
 
-        # -------- CPU + MEM (NOW BELOW FANS) --------
+        # -------- CPU + MEMORY --------
         cpu = state["cpu"]
         mem = state["memory"]
 
-        cpu_mem = Static(
+        self.cpu_mem.update(
             f"""
 CPU
   Temp: {cpu['temps']['package']}°C
@@ -80,19 +110,7 @@ Memory
   Used: {mem['usage']['used_mb']} MB
   Free: {mem['usage']['available_mb']} MB
   [{bar(mem['usage']['used_mb'], mem['total_mb'])}]
-""",
-            id="cpu_mem"
-        )
-
-        right = Vertical(
-            fans,
-            cpu_mem,
-            id="right"
-        )
-
-        yield Vertical(
-            Horizontal(left, right),
-            Static("Curves applied: cpu | gpu | mid", id="footer")
+"""
         )
 
 

@@ -30,8 +30,8 @@ Static {
 }
 
 #system_info {
-    border: round #666;
-    background: #060606;
+    border: round #aa3333;
+    background: #080202;
     height: auto;
 }
 
@@ -49,8 +49,8 @@ Static {
 }
 
 #footer {
-    border: heavy #aa0000;
+    border: heavy #4c6ef5;
     padding: 1;
-    background: #100000;
+    background: #050719ff;
     color: #ffb3b3;
 }
