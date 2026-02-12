@@ -1,0 +1,56 @@
+Screen {
+    background: black;
+    color: #cfd8dc;
+}
+
+#left {
+    width: 40%;
+    padding: 1;
+    height: 100%;
+}
+
+#right {
+    width: 60%;
+    padding: 1;
+    height: 100%;
+}
+
+Static {
+    width: 100%;
+    border: round #444;
+    padding: 1;
+    background: #050505;
+}
+
+#pc_ascii {
+    color: #8aa2ff;        
+    border: round #3a4cff;
+    background: #030314;
+    margin-bottom: 1;
+}
+
+#system_info {
+    border: round #aa3333;
+    background: #080202;
+    height: auto;
+}
+
+#fans {
+    min-height: 20;
+    border: round #aa3333;
+    color: #ff6b6b;       
+    background: #080202;
+    margin-bottom: 1;
+}
+
+#cpu_mem {
+    border: round #4c6ef5;
+    background: #04060c;
+}
+
+#footer {
+    border: heavy #4c6ef5;
+    padding: 1;
+    background: #050719ff;
+    color: #ffb3b3;
+}
