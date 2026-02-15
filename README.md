@@ -4,14 +4,13 @@ A lightweight terminal-based hardware monitor and fan control utility for Linux.
 
 
 **Note:**  
-This project currently works only on ASUS laptops.  
-It has been tested only on my machine and may not function correctly on other systems.
+This project currently works only on linux laptops.  
 
 ---
 
 ## Screenshot
 
-![hwmon screenshot](screenshot/1.png)
+![hwmon screenshot](screenshot/2.png)
 
 ---
 
