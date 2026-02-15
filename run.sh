@@ -13,4 +13,4 @@ fi
 
 cd "$PROJECT_DIR"
 
-exec sudo -E "$PYTHON" -m hwmon.tui.tui
+exec "$PYTHON" tui.py
