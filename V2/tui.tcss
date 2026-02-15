@@ -1,6 +1,11 @@
 Screen {
-    background: black;
-    color: #cfd8dc;
+    background: #1e1e2e;
+    color: #cdd6f4;
+}
+
+#main {
+    height: 100%;
+    width: 100%;
 }
 
 #left {
@@ -17,41 +22,42 @@ Screen {
 
 Static {
     width: 100%;
-    border: round #444;
+    border: round #45475a;
     padding: 1;
-    background: #050505;
+    background: #181825;
+}
+
+.centered {
+    text-align: center;
+    content-align: center middle;
 }
 
 #pc_ascii {
-    color: #8aa2ff;        
-    border: round #3a4cff;
-    background: #030314;
+    color: #89b4fa;        
+    border: round #89b4fa;
+    background: #11111b;
     margin-bottom: 1;
-}
-
-#system_info {
-    border: round #aa3333;
-    background: #080202;
     height: auto;
 }
 
+#system_info {
+    border: round #f38ba8;
+    background: #11111b;
+    color: #f5c2e7;
+    height: 1fr;
+}
+
 #fans {
-    min-height: 20;
-    border: round #aa3333;
-    color: #ff6b6b;       
-    background: #080202;
+    height: 1fr;
+    border: round #f38ba8;
+    color: #f38ba8;       
+    background: #11111b;
     margin-bottom: 1;
 }
 
 #cpu_mem {
-    border: round #4c6ef5;
-    background: #04060c;
+    border: round #a6e3a1;
+    background: #11111b;
+    color: #a6e3a1;
+    height: auto;
 }
-
-#footer {
-    border: heavy #4c6ef5;
-    padding: 1;
-    background: #050719ff;
-    color: #ffb3b3;
-}
-
