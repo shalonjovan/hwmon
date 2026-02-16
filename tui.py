@@ -13,7 +13,7 @@ def load_ascii(name: str) -> str:
 
 
 def bar(value, max_value, width, char="█"):
-    if max_value <= 0:
+    if max_value <= 0 or width <= 0:
         return ""
     ratio = min(max(value / max_value, 0), 1)
     filled = int(ratio * width)
@@ -26,6 +26,9 @@ class HwmonTUI(App):
     def on_mount(self):
         self.state = SystemState()
         self.set_interval(1, self.refresh_state)
+
+    def on_shutdown(self):
+        self.state.cleanup()
 
     def compose(self) -> ComposeResult:
         pc_ascii = load_ascii("linux.txt")
@@ -43,10 +46,7 @@ class HwmonTUI(App):
     def refresh_state(self):
         state = self.state.snapshot()
 
-        # Calculate bar width based on container width
-        # Ensure minimum width and adjust for borders and padding
         container_width = self.size.width
-        # Account for borders (4), padding (4), brackets (2), and fan text width
         right_width = max(int(container_width * 0.6) - 30, 15)
 
         # ================= LEFT =================
@@ -71,6 +71,7 @@ class HwmonTUI(App):
 
         cpu = state["cpu"]
         mem = state["memory"]
+        net = state["network"]
 
         right_text = (
             f"CPU\n"
@@ -80,7 +81,12 @@ class HwmonTUI(App):
             f"Memory\n"
             f"  Used: {mem['used_mb']} MB\n"
             f"  Free: {mem['available_mb']} MB\n"
-            f"  [{bar(mem['percent_used'], 100, right_width)}]\n"
+            f"  [{bar(mem['percent_used'], 100, right_width)}]\n\n"
+            f"Network\n"
+            f"  Sent: {net['bytes_sent'] / (1024**2):.2f} MB\n"
+            f"  Received: {net['bytes_recv'] / (1024**2):.2f} MB\n"
+            f"  ↑ {net['upload_speed'] / 1024:.2f} KB/s\n"
+            f"  ↓ {net['download_speed'] / 1024:.2f} KB/s\n"
         )
 
         if state["gpu"]:
@@ -102,7 +108,7 @@ class HwmonTUI(App):
         fan_lines = []
         for name, rpm in state["fans"].items():
             fan_lines.append(f"{name}: {rpm} RPM")
-            fan_lines.append(f"[{bar(rpm, 7600, right_width-15)}]")
+            fan_lines.append(f"[{bar(rpm, 7600, max(right_width - 15, 5))}]")
             fan_lines.append("")
 
         max_lines = max(len(fan_ascii), len(fan_lines))

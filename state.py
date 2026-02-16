@@ -19,6 +19,13 @@ class SystemState:
         sensors.init()
         self.product_name = self._get_product_name()
 
+        # --- Network tracking ---
+        self._last_net = psutil.net_io_counters()
+        self._last_net_time = time.time()
+
+        # Prime cpu_percent to avoid initial 0 spike
+        psutil.cpu_percent(interval=None)
+
     def _get_product_name(self) -> str:
         try:
             return Path("/sys/class/dmi/id/product_name").read_text().strip()
@@ -41,7 +48,27 @@ class SystemState:
             "percent_used": mem.percent,
         }
 
-    # Uses numeric feature.type (stable across pysensors versions)
+    def network(self) -> Dict[str, Any]:
+        current = psutil.net_io_counters()
+        now = time.time()
+
+        elapsed = now - self._last_net_time
+        if elapsed <= 0:
+            elapsed = 1
+
+        upload_speed = (current.bytes_sent - self._last_net.bytes_sent) / elapsed
+        download_speed = (current.bytes_recv - self._last_net.bytes_recv) / elapsed
+
+        self._last_net = current
+        self._last_net_time = now
+
+        return {
+            "bytes_sent": current.bytes_sent,
+            "bytes_recv": current.bytes_recv,
+            "upload_speed": upload_speed,
+            "download_speed": download_speed,
+        }
+
     def _parse_sensors(self):
         cpu_temp = None
         nvme_temps = {}
@@ -58,7 +85,6 @@ class SystemState:
                 value = feature.get_value()
                 ftype = feature.type
 
-                # 2 = temperature
                 if ftype == 2:
                     if "package" in label.lower():
                         cpu_temp = value
@@ -67,16 +93,13 @@ class SystemState:
                     else:
                         misc_temps[label] = value
 
-                # 1 = fan
                 elif ftype == 1:
                     fans[label] = int(value)
 
-                # 0 = voltage input
                 elif ftype == 0:
                     if "bat" in chip_name:
                         battery_data["voltage"] = round(value, 2)
 
-                # 3 = power
                 elif ftype == 3:
                     if "bat" in chip_name:
                         battery_data["power"] = round(value, 2)
@@ -96,6 +119,9 @@ class SystemState:
             for i in range(count):
                 handle = pynvml.nvmlDeviceGetHandleByIndex(i)
                 name = pynvml.nvmlDeviceGetName(handle)
+                if isinstance(name, bytes):
+                    name = name.decode()
+
                 util = pynvml.nvmlDeviceGetUtilizationRates(handle)
                 mem = pynvml.nvmlDeviceGetMemoryInfo(handle)
                 temp = pynvml.nvmlDeviceGetTemperature(
@@ -127,6 +153,7 @@ class SystemState:
                 "temp": cpu_temp,
             },
             "memory": self.memory(),
+            "network": self.network(),
             "nvme": nvme_temps,
             "fans": fans,
             "batteries": batteries,
