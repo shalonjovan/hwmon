@@ -29,9 +29,10 @@ This project currently works only on linux laptops.
 
 - Linux
 - Python 3.10+
-- Root access (required for fan control)
 - `hwmon` support in the kernel
 
+only for V1
+- Root access (required for fan control)
 ---
 
 ## Installation
